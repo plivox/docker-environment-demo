@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: env_dev_demo_nginx
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./htdocs:/srv/demo/htdocs
+    links:
+      - php
+  php:
+    build: .
+    container_name: env_dev_demo_php
+    restart: always
+    ports:
+      - 9001:9001
+    volumes:
+      - ./etc/php-fpm/pool.conf:/usr/local/etc/php-fpm.d/demo.conf
+      - ./htdocs:/srv/demo/htdocs
+    links:
+      - mysql
+  mysql:
+    image: mariadb:latest
+    container_name: env_dev_demo_mysql
+    restart: always
+    ports:
+      - 3306
+    volumes:
+      - data:/var/lib/mysql
+    #env_file:
+    #  -
+    environment:
+      MYSQL_ROOT_PASSWORD: uWjY2wfdWByZ9jJF
+      MYSQL_PASSWORD: ktRXkeG4TqthQX2L
+      MYSQL_DATABASE: demo
+      MYSQL_USER: demo
+
+volumes:
+  data:
